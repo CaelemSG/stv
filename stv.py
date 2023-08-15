@@ -57,26 +57,20 @@ for current_party in parties:
 """
 
 for current_party, ballots_to_make in parties.items():
-    weights = []
-    for party, lr in dist.items():
-        if party != current_party:
-            distance = numpy.reciprocal(abs(dist[current_party] - lr)*16)
-            weights.append(distance)
+    otherParties = [party for party in parties if party != current_party]
+    weights = [(1 / (abs(dist[current_party] - dist[party])*16)) for party in otherParties]
+    indexes = list(range(len(otherParties)))
     
-    otherParties = []
-    for party in parties:
-        if party != current_party:
-            otherParties.append(party)
-
-    for ballot_n in tqdm(range(ballots_to_make)):
+    for first_choice in tqdm(random.choices(indexes, weights=weights, k=ballots_to_make)):
         ballot_weights = weights.copy()
+        ballot_weights[first_choice] = 0
         
-        ballot = []
-        for ballotRange in range(8):
-            choice = random.choices(otherParties,weights=ballot_weights)
-            ballot_weights[otherParties.index(choice[0])] = 0
-            ballot.append(choice[0])
-
+        ballot = [otherParties[first_choice]]
+        for ballotRange in range(7):
+            choice = random.choices(indexes, weights=ballot_weights)[0]
+            ballot_weights[choice] = 0
+            ballot.append(otherParties[choice])
+        
         party_ballots[current_party].append(ballot)
 
 
