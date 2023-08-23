@@ -1,6 +1,8 @@
 import random
 from tqdm import tqdm
 
+from albatross import albatross
+
 candNum = int(input("Number of Electeds:",))
 
 dist = {
@@ -135,3 +137,4 @@ while len(winningCandidates) < candNum:
         #then repeat process, until `candNum = len(winningCandidates)`
 
 print(winningCandidates)
+albatross()
